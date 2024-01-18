@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ImageViewer": {
+      "commandName": "Project",
+      "commandLineArgs": "E:\\casey\\OldDocuments\\stable-diffusion-webui\\outputs\\extras-images\\00030.png"
+    }
+  }
+}
