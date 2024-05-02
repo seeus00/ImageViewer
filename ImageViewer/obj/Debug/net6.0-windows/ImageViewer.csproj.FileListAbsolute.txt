@@ -22,7 +22,6 @@ C:\Users\casey\source\repos\ImageViewer\ImageViewer\obj\Debug\net6.0-windows\Int
 C:\Users\casey\source\repos\ImageViewer\ImageViewer\obj\Debug\net6.0-windows\ImageViewer.csproj.ResolveComReference.cache
 C:\Users\casey\source\repos\ImageViewer\ImageViewer\bin\Debug\net6.0-windows\XamlAnimatedGif.dll
 C:\Users\casey\source\repos\ImageViewer\ImageViewer\obj\Debug\net6.0-windows\ImageViewer.csproj.AssemblyReference.cache
-C:\Users\casey\source\repos\ImageViewer\ImageViewer\obj\Debug\net6.0-windows\ImageViewer.csproj.CopyComplete
 C:\Users\casey\source\repos\ImageViewer\ImageViewer\obj\Debug\net6.0-windows\GeneratedInternalTypeHelper.g.cs
 C:\Users\casey\source\repos\ImageViewer\ImageViewer\obj\Debug\net6.0-windows\UIElements\ViewerControl.g.cs
 C:\Users\casey\source\repos\ImageViewer\ImageViewer\obj\Debug\net6.0-windows\UIElements\ViewerControl.baml
@@ -33,3 +32,14 @@ C:\Users\casey\source\repos\ImageViewer\ImageViewer\bin\Debug\net6.0-windows\Ima
 C:\Users\casey\source\repos\ImageViewer\ImageViewer\bin\Debug\net6.0-windows\Microsoft.Win32.SystemEvents.dll
 C:\Users\casey\source\repos\ImageViewer\ImageViewer\bin\Debug\net6.0-windows\System.Drawing.Common.dll
 C:\Users\casey\source\repos\ImageViewer\ImageViewer\bin\Debug\net6.0-windows\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
+C:\Users\casey\source\repos\ImageViewer\ImageViewer\bin\Debug\net6.0-windows\runtimes\win-x86\native\WebView2Loader.dll
+C:\Users\casey\source\repos\ImageViewer\ImageViewer\bin\Debug\net6.0-windows\runtimes\win-x64\native\WebView2Loader.dll
+C:\Users\casey\source\repos\ImageViewer\ImageViewer\bin\Debug\net6.0-windows\runtimes\win-arm64\native\WebView2Loader.dll
+C:\Users\casey\source\repos\ImageViewer\ImageViewer\bin\Debug\net6.0-windows\Microsoft.Web.WebView2.Core.dll
+C:\Users\casey\source\repos\ImageViewer\ImageViewer\bin\Debug\net6.0-windows\Microsoft.Web.WebView2.WinForms.dll
+C:\Users\casey\source\repos\ImageViewer\ImageViewer\bin\Debug\net6.0-windows\Microsoft.Web.WebView2.Wpf.dll
+C:\Users\casey\source\repos\ImageViewer\ImageViewer\obj\Debug\net6.0-windows\UIElements\FilePropertiesWindow.g.cs
+C:\Users\casey\source\repos\ImageViewer\ImageViewer\obj\Debug\net6.0-windows\UIElements\FilePropertiesWindow.baml
+C:\Users\casey\source\repos\ImageViewer\ImageViewer\obj\Debug\net6.0-windows\UIElements\SaucenaoWindow.g.cs
+C:\Users\casey\source\repos\ImageViewer\ImageViewer\obj\Debug\net6.0-windows\UIElements\SaucenaoWindow.baml
+C:\Users\casey\source\repos\ImageViewer\ImageViewer\obj\Debug\net6.0-windows\ImageVie.3E398B39.Up2Date

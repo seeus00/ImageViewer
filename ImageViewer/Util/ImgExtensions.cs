@@ -16,6 +16,7 @@ namespace ImageViewer.Util
         public const string PNG = ".png";
         public const string AVIF = ".avif";
         public const string ICO = ".ico";
+        public const string TIF = ".tif";
 
         public static string[] SUPPORTED_EXTENSIONS => GetExtensions();
 

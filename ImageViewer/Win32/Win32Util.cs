@@ -1,17 +1,23 @@
-﻿using System;
+﻿using ImageViewer.Logging;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices.ComTypes;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using WinProps;
+using System.Security.Policy;
 
 namespace ImageViewer.Win32
 {
@@ -52,6 +58,58 @@ namespace ImageViewer.Win32
     {
         public long x;
         public long y;
+    }
+
+    [ComImport]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [Guid("0000010c-0000-0000-c000-000000000046")]
+    public interface IPersist
+    {
+        /// <summary>
+        /// Retrieves the class identifier (CLSID) of the object.
+        /// </summary>
+        /// <param name="pClassID">A pointer to the location that receives the CLSID on return. 
+        /// The CLSID is a globally unique identifier (GUID) that uniquely represents an object class that defines the code that can manipulate the object's data.</param>
+        /// <returns>If the method succeeds, the return value is S_OK. Otherwise, it is E_FAIL.</returns>
+        [PreserveSig]
+        int GetClassID(out Guid pClassID);
+    }
+
+    [ComImport]
+    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    [Guid("1079acfc-29bd-11d3-8e0d-00c04f6837d5")]
+    public interface IPersistIDList : IPersist
+    {
+        #region Overriden IPersist Methods
+
+        /// <summary>
+        /// Retrieves the class identifier (CLSID) of the object.
+        /// </summary>
+        /// <param name="pClassID">A pointer to the location that receives the CLSID on return.
+        /// The CLSID is a globally unique identifier (GUID) that uniquely represents an object class that defines the code that can manipulate the object's data.</param>
+        /// <returns>
+        /// If the method succeeds, the return value is S_OK. Otherwise, it is E_FAIL.
+        /// </returns>
+        [PreserveSig]
+        new int GetClassID(out Guid pClassID);
+
+        #endregion
+
+        /// <summary>
+        /// Sets a persisted item identifier list.
+        /// </summary>
+        /// <param name="pidl">A pointer to the item identifier list to set.</param>
+        /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
+        [PreserveSig]
+        int SetIDList(IntPtr pidl);
+
+        /// <summary>
+        /// Gets an item identifier list.
+        /// </summary>
+        /// <param name="pidl">The address of a pointer to the item identifier list to get.</param>
+        /// <returns>If this method succeeds, it returns S_OK. Otherwise, it returns an HRESULT error code.</returns>
+        [PreserveSig]
+        int GetIDList(out IntPtr pidl);
     }
 
 
@@ -129,7 +187,11 @@ namespace ImageViewer.Win32
     [Guid("000214E2-0000-0000-C000-000000000046"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     public interface IShellBrowser
     {
-        void _VtblGap1_12(); // skip 12 methods https://stackoverflow.com/a/47567206/403671
+        [PreserveSig]
+        int GetWindow(out IntPtr phwnd);
+        //int GetControlWindow(uint id, out IntPtr phwnd);
+
+        void _VtblGap1_11(); // skip 12 methods https://stackoverflow.com/a/47567206/403671
 
         [return: MarshalAs(UnmanagedType.IUnknown)]
         object QueryActiveShellView();
@@ -148,12 +210,82 @@ namespace ImageViewer.Win32
         [return: MarshalAs(UnmanagedType.IUnknown)]
         object BindToHandler(System.Runtime.InteropServices.ComTypes.IBindCtx pbc, [MarshalAs(UnmanagedType.LPStruct)] Guid bhid, [MarshalAs(UnmanagedType.LPStruct)] Guid riid);
 
-        IShellItem GetParent();
+        int GetParent(out IShellItem parent);
 
         [return: MarshalAs(UnmanagedType.LPWStr)]
         string GetDisplayName(SIGDN sigdnName);
 
         // 2 other methods to be defined
+    }
+
+
+    [ComImport, Guid("7e9fb0d3-919f-4307-ab2e-9b1860310c93"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    interface IShellItem2
+    {
+        #region inherited from IShellItem
+        void BindToHandler(
+            [In, MarshalAs(UnmanagedType.Interface)] IBindCtx pbc,
+            [In] IntPtr bhid,   // A Guid for the Bind Handler (BHID)
+            [In] IntPtr riid,   // The iid of the required interface
+            [Out] out IntPtr ppv);  // IUnknown
+        void GetParent(
+            [Out] out IntPtr ppsi); // IShellItem
+        void GetDisplayName(
+            [In] SIGDN sigdnName,
+            [Out, MarshalAs(UnmanagedType.LPWStr)] out string ppszName);
+        void GetAttributes(
+            [In] SFGAO sfgaoMask,
+            [Out] out SFGAO psfgaoAttribs);
+        void Compare(
+            [In, MarshalAs(UnmanagedType.Interface)] IShellItem psi,
+            [In] SICHINTF hint,
+            [Out] out int piOrder);
+        #endregion
+        void GetPropertyStore(
+            [In] GETPROPERTYSTOREFLAGS flags,
+            [In] IntPtr riid,   // IID_IPropertyStore
+            [Out] out IntPtr ppv);  // IPropertyStore
+        void GetPropertyStoreWithCreateObject(
+            [In] GETPROPERTYSTOREFLAGS flags,
+            [In] IntPtr punkCreateObject,   // factory for low-rights creation of type ICreateObject
+            [In] IntPtr riid,   // IID_IPropertyStore
+            [Out] out IntPtr ppv);  // IPropertyStore
+        void GetPropertyStoreForKeys(
+            [In] IntPtr rgKeys, // A Pointer to an array of PROPERTYKEY structures
+            [In] uint cKeys,
+            [In] GETPROPERTYSTOREFLAGS flags,
+            [In] IntPtr riid,   // IID_IPropertyStore
+            [Out] out IntPtr ppv);  // IPropertyStore
+        void GetPropertyDescriptionList(
+            [In] IntPtr keyType,    // A Propertykey defining the list to get eg: System.PropList.FillDetails
+            [In] IntPtr riid,   // IID_IPropertyDescriptionList
+            [Out] out IntPtr ppv);  // IPropertyDescriptionList
+        void Update(
+            [In, MarshalAs(UnmanagedType.Interface)] IBindCtx pbc);
+        void GetProperty(
+            [In] IntPtr propKey,
+            [Out] out IntPtr ppropvar); // PROPVARIANT
+        void GetCLSID(
+            [In] IntPtr propKey,
+            [Out] out IntPtr pclsid);
+        void GetFileTime(
+            [In] IntPtr propKey,
+            [Out] out long pft);
+        void GetInt32(
+            [In] IntPtr propKey,
+            [Out] out int pi);
+        void GetString(
+            [In] IntPtr propKey,
+            [Out, MarshalAs(UnmanagedType.LPWStr)] out string ppsz);
+        void GetUInt32(
+            [In] IntPtr propKey,
+            [Out] out uint pui);
+        void GetUInt64(
+            [In] IntPtr propKey,
+            [Out] out ulong pull);
+        void GetBool(
+            [In] IntPtr propKey,
+            [Out, MarshalAs(UnmanagedType.Bool)] out bool pf);
     }
 
     [Guid("b63ea76d-1f85-456f-a19c-48159efa858b"), InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
@@ -202,45 +334,166 @@ namespace ImageViewer.Win32
 
     internal static class Win32Util
     {
-
-        [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
-        public static extern IntPtr ILCreateFromPath([In, MarshalAs(UnmanagedType.LPWStr)] string pszPath);
-
-
-        [DllImport("shell32.dll")]
-        [return: MarshalAs(UnmanagedType.Bool)]
-        public static extern bool SHGetPathFromIDListW(IntPtr pidl, [MarshalAs(UnmanagedType.LPTStr)] StringBuilder pszPath);
-
-
         [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
         private static extern int SHCreateItemFromParsingName(string path, IntPtr pbc, [MarshalAs(UnmanagedType.LPStruct)] Guid riid, out IShellItemImageFactory factory);
 
         [DllImport("gdi32.dll")]
         public static extern bool DeleteObject(IntPtr hObject);
 
-        public static BitmapImage ToBitmapImage(Bitmap bitmap)
+        [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern unsafe IntPtr memcpy(void* dst, void* src, UIntPtr count);
+
+        private delegate bool EnumWindowsProc(IntPtr hWnd, int lParam);
+
+        [DllImport("USER32.DLL")]
+        private static extern bool EnumWindows(EnumWindowsProc enumFunc, int lParam);
+
+        [DllImport("user32.dll")]
+        private static extern bool EnumChildWindows(IntPtr hwnd, EnumWindowsProc func, IntPtr lParam);
+
+
+        [DllImport("USER32.DLL")]
+        private static extern IntPtr GetShellWindow();
+        [DllImport("USER32.DLL")]
+        private static extern bool IsWindowVisible(IntPtr hWnd);
+        [DllImport("USER32.DLL")]
+        private static extern IntPtr LoadImage(IntPtr hWnd, string name, int type, int cx, int cy, int fuLoad);
+        [DllImport("USER32.DLL")]
+        private static extern IntPtr GetForegroundWindow();
+        [DllImport("user32.dll")]
+        static extern IntPtr GetActiveWindow();
+
+        [DllImport("shell32.dll", CharSet = CharSet.Auto)]
+        static extern bool ShellExecuteEx(ref SHELLEXECUTEINFO lpExecInfo);
+
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+        public struct SHELLEXECUTEINFO
         {
-            using (var memory = new MemoryStream())
-            {
-                bitmap.Save(memory, ImageFormat.Png);
-                memory.Position = 0;
-
-                var bitmapImage = new BitmapImage();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memory;
-                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
-                bitmapImage.EndInit();
-                bitmapImage.Freeze();
-
-                DeleteObject(bitmap.GetHbitmap());
-
-
-                return bitmapImage;
-            }
+            public int cbSize;
+            public uint fMask;
+            public IntPtr hwnd;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpVerb;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpFile;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpParameters;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpDirectory;
+            public int nShow;
+            public IntPtr hInstApp;
+            public IntPtr lpIDList;
+            [MarshalAs(UnmanagedType.LPTStr)]
+            public string lpClass;
+            public IntPtr hkeyClass;
+            public uint dwHotKey;
+            public IntPtr hIcon;
+            public IntPtr hProcess;
         }
 
 
-        public static Bitmap ExtractThumbnail(string filePath, System.Drawing.Size size, SIIGBF flags)
+        private const int SW_SHOW = 5;
+        private const uint SEE_MASK_INVOKEIDLIST = 12;
+        public static bool ShowFileProperties(string Filename)
+        {
+            SHELLEXECUTEINFO info = new SHELLEXECUTEINFO();
+            info.cbSize = Marshal.SizeOf(info);
+            info.lpVerb = "properties";
+            info.lpFile = Filename;
+            info.nShow = SW_SHOW;
+            info.fMask = SEE_MASK_INVOKEIDLIST;
+            return ShellExecuteEx(ref info);
+        }
+
+        private static Bitmap GetBitmapFromHBitmap(IntPtr nativeHBitmap)
+        {
+            Bitmap bmp = Image.FromHbitmap(nativeHBitmap);
+
+            if (Image.GetPixelFormatSize(bmp.PixelFormat) < 32)
+                return bmp;
+
+            using (bmp) return CreateAlphaBitmap(bmp, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+        }
+
+        private static unsafe Bitmap CreateAlphaBitmap(Bitmap srcBitmap, System.Drawing.Imaging.PixelFormat targetPixelFormat)
+        {
+            var result = new Bitmap(srcBitmap.Width, srcBitmap.Height, targetPixelFormat);
+
+            var bmpBounds = new Rectangle(0, 0, srcBitmap.Width, srcBitmap.Height);
+            var srcData = srcBitmap.LockBits(bmpBounds, ImageLockMode.ReadOnly, srcBitmap.PixelFormat);
+            var destData = result.LockBits(bmpBounds, ImageLockMode.ReadOnly, targetPixelFormat);
+
+            var srcDataPtr = (byte*)srcData.Scan0;
+            var destDataPtr = (byte*)destData.Scan0;
+
+            try
+            {
+                for (int y = 0; y <= srcData.Height - 1; y++)
+                {
+                    for (int x = 0; x <= srcData.Width - 1; x++)
+                    {
+                        //this is really important because one stride may be positive and the other negative
+                        var position = srcData.Stride * y + 4 * x;
+                        var position2 = destData.Stride * y + 4 * x;
+
+                        memcpy(destDataPtr + position2, srcDataPtr + position, (UIntPtr)4);
+                    }
+                }
+            }
+            finally
+            {
+                srcBitmap.UnlockBits(srcData);
+                result.UnlockBits(destData);
+            }
+
+            return result;
+        }
+
+        public static ImageSource ImageSourceFromBitmap(Bitmap bmp)
+        {
+            var handle = bmp.GetHbitmap();
+            try
+            {
+                return Imaging.CreateBitmapSourceFromHBitmap(handle, IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+            }
+            finally { DeleteObject(handle); }
+        }
+
+        public static BitmapImage BitmapToImageSource(Bitmap bitmap)
+        {
+            using MemoryStream memory = new MemoryStream();
+            
+            bitmap.Save(memory, ImageFormat.Bmp);
+            memory.Position = 0;
+            BitmapImage bitmapImage = new BitmapImage();
+            bitmapImage.BeginInit();
+            bitmapImage.StreamSource = memory;
+            bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+            bitmapImage.DecodePixelWidth = 100;
+            bitmapImage.EndInit();
+            bitmapImage.Freeze();
+
+            return bitmapImage;
+        }
+
+        public static BitmapImage ExtractThumbnail(string filePath, System.Drawing.Size size, SIIGBF options)
+        {
+            var hBitmap = GetHBitmap(filePath, size, options);
+
+            try
+            {
+                // return a System.Drawing.Bitmap from the hBitmap
+                var bitmap = GetBitmapFromHBitmap(hBitmap);
+                return BitmapToImageSource(bitmap);
+            }
+            finally
+            {
+                // delete HBitmap to avoid memory leaks
+                DeleteObject(hBitmap);
+            }
+        }
+
+        private static IntPtr GetHBitmap(string filePath, System.Drawing.Size size, SIIGBF flags)
         {
             if (filePath == null)
                 throw new ArgumentNullException("filePath");
@@ -257,88 +510,115 @@ namespace ImageViewer.Win32
             if (hr != 0)
                 throw new Win32Exception(hr);
 
-            return Bitmap.FromHbitmap(bmp);
+            return bmp;
+            //return Bitmap.FromHbitmap(bmp);
         }
 
 
+        // Import necessary Win32 API functions
+        [DllImport("user32.dll", SetLastError = true)]
+        private static extern IntPtr FindWindowEx(IntPtr parentHandle, IntPtr childAfter, string className, string windowTitle);
 
 
-        public static List<string> GetAllFilesFromExplorer(string baseFile)
+        public static async Task<List<string>?> GetAllFilesFromExplorer(string baseFile)
         {
+            IntPtr explorerHandle = FindWindowEx(IntPtr.Zero, IntPtr.Zero, "CabinetWClass", null);  // Get the handle of the Windows Explorer window
+            IntPtr activeTab = FindWindowEx(explorerHandle, IntPtr.Zero, "ShellTabWindowClass", null); //Gets the handle of the currently selected tab
+
+            //var openWindows = new List<IntPtr>();
+
+            //EnumChildWindows(explorerHandle, (IntPtr hWnd, int lParam) =>
+            //{
+            //    if (!IsWindowVisible(hWnd)) return true;
+
+            //    openWindows.Add(hWnd);
+
+            //    return true;
+            //}, IntPtr.Zero);
+
+
             Shell32.Shell shell = new Shell32.Shell();
-            
+
             //Get all file explorer windows
             foreach (var window in shell.Windows())
             {
                 var allFiles = new List<string>();
-
                 var sp = (IServiceProvider)window;
+                
                 //Get "top" level browser (to traverse the explorer windows) 
                 var SID_STopLevelBrowser = new Guid("4c96be40-915c-11cf-99d3-00aa004ae837");
-
-
                 var browser = (IShellBrowser)sp.QueryService(SID_STopLevelBrowser, typeof(IShellBrowser).GUID);
+
+                //If current tab in the explorer is not the selected tab, skip it
+                browser.GetWindow(out IntPtr thisTab);
+                if (thisTab != activeTab) continue;
 
                 //If view is a valid IFolderView, then it is a file explorer instance
                 var view = (IFolderView)browser.QueryActiveShellView();
                 if (view != null)
                 {
-                    view.GetFolder(typeof(IPersistFolder2).GUID, out var pf);
-                    IPersistFolder2 persistFolder = (IPersistFolder2)pf;
+                    //view.GetFolder(typeof(IPersistFolder2).GUID, out var pf);
+                    //IPersistFolder2 persistFolder = (IPersistFolder2)pf;
 
-                    //Get pidl of folder
-                    persistFolder.GetCurFolder(out IntPtr pidl);
+                    ////Get pidl of folder
+                    //persistFolder.GetCurFolder(out IntPtr pidl);
 
-                    //Convert pidl to string path
-                    StringBuilder builder = new StringBuilder(260);
-                    SHGetPathFromIDListW(pidl, builder);
+                    ////Convert pidl to string path
+                    //StringBuilder builder = new StringBuilder(260);
+                    //SHGetPathFromIDListW(pidl, builder);
 
-                    string basePath = builder.ToString();
-                    basePath = string.IsNullOrEmpty(basePath) ? Path.GetDirectoryName(baseFile) : basePath;
+                    //string basePath = builder.ToString();
+                    //basePath = string.IsNullOrEmpty(basePath) ? Path.GetDirectoryName(baseFile) : basePath;
 
                     view.Items(SVGIO.SVGIO_FLAG_VIEWORDER, typeof(IShellItemArray).GUID, out var items);
 
                     //Gets the focused item index (index is in terms of the order of the folder)
-                    view.GetFocusedItem(out int startInd);
-                    var folderPaths = new List<string>();
-
-                    if (items is IShellItemArray array)
+                    try
                     {
-                        for (var i = 0; i < array.GetCount(); i++)
+                        view.GetFocusedItem(out int startInd);
+                        var folderPaths = new List<string>();
+
+                        if (items is IShellItemArray array)
                         {
-                            //Item starts at the one that is currently selected or focused
-                            var item = array.GetItemAt(i);
-                            string fullItemPath = $"{basePath}\\{item.GetDisplayName(SIGDN.SIGDN_NORMALDISPLAY)}";
-
-
-                            //Folders are excluded
-                            if (File.Exists(fullItemPath)) allFiles.Add(fullItemPath);
-                            else folderPaths.Add(fullItemPath);
-                        }
-
-                        //Correct shell explorer was found 
-                        if (allFiles.Contains(baseFile))
-                        {
-                            startInd = (startInd - folderPaths.Count < 0) ? startInd : startInd - folderPaths.Count;
-
-                            //Okay, so the startInd is actual index of the focused or selected item RELATIVE to the file explorer.
-                            //Right now, array.getItemAt(0) always starts with the focused item first. So, we basically shift the 
-                            //files so that they move to their correct locations.
-                            var sortedFiles = new List<string>(allFiles);
-                            for (int i = startInd, currInd = 0; currInd < sortedFiles.Count; i = (i + 1) % sortedFiles.Count, currInd++)
+                            for (var i = 0; i < array.GetCount(); i++)
                             {
-                                sortedFiles[i] = allFiles[currInd];
+                                //Item starts at the one that is currently selected or focused
+                                var item = (IShellItem2)array.GetItemAt(i);
+                                
+                                //Get file location from property
+                                var locationProp = new PropertyKey("System.ItemPathDisplay");
+                                item.GetString(locationProp.MarshalledPointer, out string fullItemPath);
+
+                                allFiles.Add(fullItemPath);
+                            }
+                  
+
+                            ////Correct shell explorer was found 
+                            if (allFiles.Contains(baseFile))
+                            {
+                                //Okay, so the startInd is actual index of the focused or selected item RELATIVE to the file explorer.
+                                //Right now, array.getItemAt(0) always starts with the focused item first. So, we basically shift the 
+                                //files so that they move to their correct locations.
+                                var sortedFiles = new List<string>(allFiles);
+                                for (int i = startInd, currInd = 0; currInd < sortedFiles.Count; i = (i + 1) % sortedFiles.Count, currInd++)
+                                {
+                                    sortedFiles[i] = allFiles[currInd];
+                                }
+
+                                //Exclude folders
+                                sortedFiles = sortedFiles.Where(filePath => File.Exists(filePath)).ToList();
+                                return sortedFiles;
                             }
 
-                            return sortedFiles;
                         }
-
+                    }catch (Exception e)
+                    {
+                        await Logger.WriteData(e.ToString());
                     }
                 }
             }
 
-            //If there are no shells(explorers) open or found, then try to use the original image without the directory
-            return (File.Exists(baseFile)) ? new List<string>() { baseFile } : new List<string>();
+            return new List<string>(){ baseFile };
         }
 
     }

@@ -15,7 +15,14 @@
             ClipToBounds="True"
             Background="{Binding Path=Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
 
-        <Image x:Name="MainImage">
+
+        <!--<Image x:Name="ThumbnailImage" Visibility="Collapsed">
+            <Image.RenderTransform>
+                <MatrixTransform/>
+            </Image.RenderTransform>
+        </Image>-->
+
+        <Image x:Name="MainImage" Visibility="Visible">
             <Image.RenderTransform>
                 <MatrixTransform/>
             </Image.RenderTransform>

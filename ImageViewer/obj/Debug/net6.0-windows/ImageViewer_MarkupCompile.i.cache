@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET6_0;NETCOREAPP
 C:\Users\casey\source\repos\ImageViewer\ImageViewer\App.xaml
-2-384511510
-1103199032
-14333906108
-197193804238
-MainWindow.xaml;UIElements\ViewerControl.xaml;
+4552326200
+41974306131
+36184567559
+200-1832398003
+MainWindow.xaml;UIElements\FilePropertiesWindow.xaml;UIElements\SaucenaoWindow.xaml;UIElements\ViewerControl.xaml;
 
 False
 

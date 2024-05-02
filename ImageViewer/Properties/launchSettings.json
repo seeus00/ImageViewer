@@ -2,7 +2,8 @@
   "profiles": {
     "ImageViewer": {
       "commandName": "Project",
-      "commandLineArgs": "E:\\casey\\OldDocuments\\stable-diffusion-webui\\outputs\\extras-images\\00030.png"
+      "commandLineArgs": "C:\\Users\\casey\\Pictures\\Gt+he+doesnt+want+to+be+repetitive+_727e0e8a87b3f60504ab1db5295275c9.gif",
+      "nativeDebugging": false
     }
   }
 }

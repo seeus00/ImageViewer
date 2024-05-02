@@ -8,11 +8,45 @@
     ".NETCoreApp,Version=v6.0": {
       "ImageViewer/1.0.0": {
         "dependencies": {
+          "Microsoft.Web.WebView2": "1.0.2210.55",
           "System.Drawing.Common": "8.0.1",
-          "XamlAnimatedGif": "2.2.0"
+          "XamlAnimatedGif": "0.0.0-alpha.0"
         },
         "runtime": {
           "ImageViewer.dll": {}
+        }
+      },
+      "Microsoft.Web.WebView2/1.0.2210.55": {
+        "runtime": {
+          "lib/netcoreapp3.0/Microsoft.Web.WebView2.Core.dll": {
+            "assemblyVersion": "1.0.2210.55",
+            "fileVersion": "1.0.2210.55"
+          },
+          "lib/netcoreapp3.0/Microsoft.Web.WebView2.WinForms.dll": {
+            "assemblyVersion": "1.0.2210.55",
+            "fileVersion": "1.0.2210.55"
+          },
+          "lib/netcoreapp3.0/Microsoft.Web.WebView2.Wpf.dll": {
+            "assemblyVersion": "1.0.2210.55",
+            "fileVersion": "1.0.2210.55"
+          }
+        },
+        "runtimeTargets": {
+          "runtimes/win-arm64/native/WebView2Loader.dll": {
+            "rid": "win-arm64",
+            "assetType": "native",
+            "fileVersion": "1.0.2210.55"
+          },
+          "runtimes/win-x64/native/WebView2Loader.dll": {
+            "rid": "win-x64",
+            "assetType": "native",
+            "fileVersion": "1.0.2210.55"
+          },
+          "runtimes/win-x86/native/WebView2Loader.dll": {
+            "rid": "win-x86",
+            "assetType": "native",
+            "fileVersion": "1.0.2210.55"
+          }
         }
       },
       "Microsoft.Win32.SystemEvents/8.0.0": {
@@ -42,11 +76,11 @@
           }
         }
       },
-      "XamlAnimatedGif/2.2.0": {
+      "XamlAnimatedGif/0.0.0-alpha.0": {
         "runtime": {
           "lib/net5.0-windows7.0/XamlAnimatedGif.dll": {
-            "assemblyVersion": "2.0.0.0",
-            "fileVersion": "2.2.0.0"
+            "assemblyVersion": "0.0.0.0",
+            "fileVersion": "0.0.0.0"
           }
         }
       }
@@ -57,6 +91,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "Microsoft.Web.WebView2/1.0.2210.55": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-pb5kuzl8TQm+ztzOnOm/qX75DXXjOQMdKlcs2hyizbZobiGzJcMcIhpmMmgg1cTGYwof2fVhlC809YScvDbm3w==",
+      "path": "microsoft.web.webview2/1.0.2210.55",
+      "hashPath": "microsoft.web.webview2.1.0.2210.55.nupkg.sha512"
     },
     "Microsoft.Win32.SystemEvents/8.0.0": {
       "type": "package",
@@ -72,12 +113,12 @@
       "path": "system.drawing.common/8.0.1",
       "hashPath": "system.drawing.common.8.0.1.nupkg.sha512"
     },
-    "XamlAnimatedGif/2.2.0": {
+    "XamlAnimatedGif/0.0.0-alpha.0": {
       "type": "package",
       "serviceable": true,
-      "sha512": "sha512-r3nV9JB8smnLRpzI/LVqBS9szuky3l45BP3blVsns/1rmeS1kK3mATiESHPuSvJ46T5INdDhgqcIRdsX2xJbPQ==",
-      "path": "xamlanimatedgif/2.2.0",
-      "hashPath": "xamlanimatedgif.2.2.0.nupkg.sha512"
+      "sha512": "sha512-B19V0NA1Zhzak82xdmZ6sjdEVeXVBx2Z3OwmBSr8IkR5d8B9PR1x1EupNxodTf7Ug+2eCosI5Fqs/ndxd5HfvQ==",
+      "path": "xamlanimatedgif/0.0.0-alpha.0",
+      "hashPath": "xamlanimatedgif.0.0.0-alpha.0.nupkg.sha512"
     }
   }
 }

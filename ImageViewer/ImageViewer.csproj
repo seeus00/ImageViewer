@@ -6,6 +6,7 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -31,8 +32,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2210.55" />
     <PackageReference Include="System.Drawing.Common" Version="8.0.1" />
-    <PackageReference Include="XamlAnimatedGif" Version="2.2.0" />
+    <PackageReference Include="XamlAnimatedGif" Version="0.0.0-alpha.0" />
   </ItemGroup>
 
   <ItemGroup>

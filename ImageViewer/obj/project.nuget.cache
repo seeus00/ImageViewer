@@ -1,16 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "m5yyIWkwifxaxYKQkYdGNDZJ6ynD5I8JQkahywAocR4TYH1Ay8YCPeNqP7g5h7tb81nMp3mtisIhEYEdIVDXHA==",
+  "dgSpecHash": "dYSox8taEgsKIOQRL3YrWcrVYkIpUK7uh4MgBD9KsvyhZIN4HPioMJc1APIp41QbGVtWc6hS1uFk8Ahqn+K/iw==",
   "success": true,
   "projectFilePath": "C:\\Users\\casey\\source\\repos\\ImageViewer\\ImageViewer\\ImageViewer.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\casey\\.nuget\\packages\\microsoft.web.webview2\\1.0.2210.55\\microsoft.web.webview2.1.0.2210.55.nupkg.sha512",
     "C:\\Users\\casey\\.nuget\\packages\\microsoft.win32.systemevents\\8.0.0\\microsoft.win32.systemevents.8.0.0.nupkg.sha512",
     "C:\\Users\\casey\\.nuget\\packages\\system.drawing.common\\8.0.1\\system.drawing.common.8.0.1.nupkg.sha512",
-    "C:\\Users\\casey\\.nuget\\packages\\xamlanimatedgif\\2.2.0\\xamlanimatedgif.2.2.0.nupkg.sha512",
-    "C:\\Users\\casey\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\6.0.23\\microsoft.windowsdesktop.app.ref.6.0.23.nupkg.sha512",
-    "C:\\Users\\casey\\.nuget\\packages\\microsoft.netcore.app.ref\\6.0.23\\microsoft.netcore.app.ref.6.0.23.nupkg.sha512",
-    "C:\\Users\\casey\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\6.0.23\\microsoft.aspnetcore.app.ref.6.0.23.nupkg.sha512",
-    "C:\\Users\\casey\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\6.0.23\\microsoft.netcore.app.host.win-x64.6.0.23.nupkg.sha512"
+    "C:\\Users\\casey\\.nuget\\packages\\xamlanimatedgif\\0.0.0-alpha.0\\xamlanimatedgif.0.0.0-alpha.0.nupkg.sha512"
   ],
   "logs": []
 }

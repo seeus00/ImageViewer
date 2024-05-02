@@ -7,12 +7,24 @@
     </ApplicationDefinition>
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="UIElements\SaucenaoWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="UIElements\FilePropertiesWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="UIElements\ViewerControl.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="MainWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UIElements\SaucenaoWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="UIElements\FilePropertiesWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="UIElements\ViewerControl.xaml">
