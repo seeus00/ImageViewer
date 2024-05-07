@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "dgSpecHash": "k8qcDKVtmg7dlqmN/guiv394eSJ6vrto17TJIH9t5kRpf/AqMxFTPVgEar0qmNSAHDcBB/K/dXVgaafT1JXuIA==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\casey\\source\\repos\\ImageViewer\\ImageViewer\\ImageViewer.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\casey\\.nuget\\packages\\microsoft.web.webview2\\1.0.2210.55\\microsoft.web.webview2.1.0.2210.55.nupkg.sha512",
+    "C:\\Users\\casey\\.nuget\\packages\\microsoft.win32.systemevents\\8.0.0\\microsoft.win32.systemevents.8.0.0.nupkg.sha512",
+    "C:\\Users\\casey\\.nuget\\packages\\system.drawing.common\\8.0.1\\system.drawing.common.8.0.1.nupkg.sha512",
+    "C:\\Users\\casey\\.nuget\\packages\\xamlanimatedgif\\2.3.0\\xamlanimatedgif.2.3.0.nupkg.sha512"
+  ],
+  "logs": []
+}

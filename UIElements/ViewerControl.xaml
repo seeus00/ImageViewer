@@ -1,0 +1,31 @@
+﻿<UserControl x:Class="ImageViewer.UIElements.ViewerControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ImageViewer.UIElements"
+             mc:Ignorable="d" 
+             d:DesignHeight="700" d:DesignWidth="900">
+
+    <Canvas
+            Name="MainCanvas"
+            MouseLeftButtonDown="CanvasMouseLeftButtonDown"
+            MouseLeftButtonUp="CanvasMouseLeftButtonUp"
+            MouseMove="CanvasMouseMove"
+            ClipToBounds="True"
+            Background="{Binding Path=Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
+
+
+        <!--<Image x:Name="ThumbnailImage" Visibility="Collapsed">
+            <Image.RenderTransform>
+                <MatrixTransform/>
+            </Image.RenderTransform>
+        </Image>-->
+
+        <Image x:Name="MainImage" Visibility="Visible">
+            <Image.RenderTransform>
+                <MatrixTransform/>
+            </Image.RenderTransform>
+        </Image>
+    </Canvas>
+</UserControl>
