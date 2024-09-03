@@ -334,6 +334,12 @@ namespace ImageViewer.Win32
 
     internal static class Win32Util
     {
+        [DllImport("user32.dll")]
+        public static extern void ClipCursor(ref System.Drawing.Rectangle rect);
+
+        [DllImport("user32.dll")]
+        public static extern void ClipCursor(IntPtr rect);
+
         [DllImport("shell32.dll", CharSet = CharSet.Unicode)]
         private static extern int SHCreateItemFromParsingName(string path, IntPtr pbc, [MarshalAs(UnmanagedType.LPStruct)] Guid riid, out IShellItemImageFactory factory);
 
@@ -498,8 +504,6 @@ namespace ImageViewer.Win32
             if (filePath == null)
                 throw new ArgumentNullException("filePath");
 
-            // TODO: you might want to cache the factory for different types of files
-            // as this simple call may trigger some heavy-load underground operations
             IShellItemImageFactory factory;
             int hr = SHCreateItemFromParsingName(filePath, IntPtr.Zero, typeof(IShellItemImageFactory).GUID, out factory);
             if (hr != 0)
@@ -511,7 +515,6 @@ namespace ImageViewer.Win32
                 throw new Win32Exception(hr);
 
             return bmp;
-            //return Bitmap.FromHbitmap(bmp);
         }
 
 
@@ -524,17 +527,6 @@ namespace ImageViewer.Win32
         {
             IntPtr explorerHandle = FindWindowEx(IntPtr.Zero, IntPtr.Zero, "CabinetWClass", null);  // Get the handle of the Windows Explorer window
             IntPtr activeTab = FindWindowEx(explorerHandle, IntPtr.Zero, "ShellTabWindowClass", null); //Gets the handle of the currently selected tab
-
-            //var openWindows = new List<IntPtr>();
-
-            //EnumChildWindows(explorerHandle, (IntPtr hWnd, int lParam) =>
-            //{
-            //    if (!IsWindowVisible(hWnd)) return true;
-
-            //    openWindows.Add(hWnd);
-
-            //    return true;
-            //}, IntPtr.Zero);
 
 
             Shell32.Shell shell = new Shell32.Shell();
@@ -557,19 +549,6 @@ namespace ImageViewer.Win32
                 var view = (IFolderView)browser.QueryActiveShellView();
                 if (view != null)
                 {
-                    //view.GetFolder(typeof(IPersistFolder2).GUID, out var pf);
-                    //IPersistFolder2 persistFolder = (IPersistFolder2)pf;
-
-                    ////Get pidl of folder
-                    //persistFolder.GetCurFolder(out IntPtr pidl);
-
-                    ////Convert pidl to string path
-                    //StringBuilder builder = new StringBuilder(260);
-                    //SHGetPathFromIDListW(pidl, builder);
-
-                    //string basePath = builder.ToString();
-                    //basePath = string.IsNullOrEmpty(basePath) ? Path.GetDirectoryName(baseFile) : basePath;
-
                     view.Items(SVGIO.SVGIO_FLAG_VIEWORDER, typeof(IShellItemArray).GUID, out var items);
 
                     //Gets the focused item index (index is in terms of the order of the folder)
@@ -588,10 +567,8 @@ namespace ImageViewer.Win32
                                 //Get file location from property
                                 var locationProp = new PropertyKey("System.ItemPathDisplay");
                                 item.GetString(locationProp.MarshalledPointer, out string fullItemPath);
-
-                                allFiles.Add(fullItemPath);
+                                allFiles.Add(fullItemPath.ToLower());
                             }
-                  
 
                             ////Correct shell explorer was found 
                             if (allFiles.Contains(baseFile))
@@ -609,7 +586,6 @@ namespace ImageViewer.Win32
                                 sortedFiles = sortedFiles.Where(filePath => File.Exists(filePath)).ToList();
                                 return sortedFiles;
                             }
-
                         }
                     }catch (Exception e)
                     {

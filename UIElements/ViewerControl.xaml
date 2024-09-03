@@ -6,26 +6,27 @@
              xmlns:local="clr-namespace:ImageViewer.UIElements"
              mc:Ignorable="d" 
              d:DesignHeight="700" d:DesignWidth="900">
+    <Grid Name="OuterGrid">
+        <Canvas
+        Name="MainCanvas"
+        MouseLeftButtonDown="CanvasMouseLeftButtonDown"
+        MouseLeftButtonUp="CanvasMouseLeftButtonUp"
+        MouseMove="CanvasMouseMove"
+        ClipToBounds="True"
+        Background="{Binding Path=Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
 
-    <Canvas
-            Name="MainCanvas"
-            MouseLeftButtonDown="CanvasMouseLeftButtonDown"
-            MouseLeftButtonUp="CanvasMouseLeftButtonUp"
-            MouseMove="CanvasMouseMove"
-            ClipToBounds="True"
-            Background="{Binding Path=Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
 
+            <!--<Image x:Name="ThumbnailImage" Visibility="Collapsed">
+        <Image.RenderTransform>
+            <MatrixTransform/>
+        </Image.RenderTransform>
+    </Image>-->
 
-        <!--<Image x:Name="ThumbnailImage" Visibility="Collapsed">
-            <Image.RenderTransform>
-                <MatrixTransform/>
-            </Image.RenderTransform>
-        </Image>-->
-
-        <Image x:Name="MainImage" Visibility="Visible">
-            <Image.RenderTransform>
-                <MatrixTransform/>
-            </Image.RenderTransform>
-        </Image>
-    </Canvas>
+            <Image x:Name="MainImage" Visibility="Visible">
+                <Image.RenderTransform>
+                    <MatrixTransform/>
+                </Image.RenderTransform>
+            </Image>
+        </Canvas>
+    </Grid>
 </UserControl>

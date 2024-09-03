@@ -1,0 +1,20 @@
+﻿ImageViewer
+1.0.0.0
+
+winexe
+C#
+.cs
+H:\Windows Backup\dotnet\repos\ImageViewer\ImageViewer\obj\Debug\net7.0-windows7.0\
+ImageViewer
+none
+false
+TRACE;DEBUG;NET;NET7_0;NETCOREAPP
+H:\Windows Backup\dotnet\repos\ImageViewer\ImageViewer\App.xaml
+4552326200
+41974306131
+371598241327
+204-498497569
+MainWindow.xaml;UIElements\FilePropertiesWindow.xaml;UIElements\SaucenaoWindow.xaml;UIElements\ViewerControl.xaml;
+
+False
+

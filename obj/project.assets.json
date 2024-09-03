@@ -1,7 +1,7 @@
 {
   "version": 3,
   "targets": {
-    "net6.0-windows7.0": {
+    "net7.0-windows7.0": {
       "Microsoft.Web.WebView2/1.0.2210.55": {
         "type": "package",
         "compile": {
@@ -47,12 +47,12 @@
       "Microsoft.Win32.SystemEvents/8.0.0": {
         "type": "package",
         "compile": {
-          "lib/net6.0/Microsoft.Win32.SystemEvents.dll": {
+          "lib/net7.0/Microsoft.Win32.SystemEvents.dll": {
             "related": ".xml"
           }
         },
         "runtime": {
-          "lib/net6.0/Microsoft.Win32.SystemEvents.dll": {
+          "lib/net7.0/Microsoft.Win32.SystemEvents.dll": {
             "related": ".xml"
           }
         },
@@ -60,10 +60,26 @@
           "buildTransitive/net6.0/_._": {}
         },
         "runtimeTargets": {
-          "runtimes/win/lib/net6.0/Microsoft.Win32.SystemEvents.dll": {
+          "runtimes/win/lib/net7.0/Microsoft.Win32.SystemEvents.dll": {
             "assetType": "runtime",
             "rid": "win"
           }
+        }
+      },
+      "SixLabors.ImageSharp/3.1.4": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/SixLabors.ImageSharp.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/SixLabors.ImageSharp.dll": {
+            "related": ".xml"
+          }
+        },
+        "build": {
+          "build/SixLabors.ImageSharp.props": {}
         }
       },
       "System.Drawing.Common/8.0.1": {
@@ -72,34 +88,18 @@
           "Microsoft.Win32.SystemEvents": "8.0.0"
         },
         "compile": {
-          "lib/net6.0/System.Drawing.Common.dll": {
+          "lib/net7.0/System.Drawing.Common.dll": {
             "related": ".pdb;.xml"
           }
         },
         "runtime": {
-          "lib/net6.0/System.Drawing.Common.dll": {
+          "lib/net7.0/System.Drawing.Common.dll": {
             "related": ".pdb;.xml"
           }
         },
         "build": {
           "buildTransitive/net6.0/_._": {}
         }
-      },
-      "XamlAnimatedGif/2.3.0": {
-        "type": "package",
-        "compile": {
-          "lib/net5.0-windows7.0/XamlAnimatedGif.dll": {
-            "related": ".pdb"
-          }
-        },
-        "runtime": {
-          "lib/net5.0-windows7.0/XamlAnimatedGif.dll": {
-            "related": ".pdb"
-          }
-        },
-        "frameworkReferences": [
-          "Microsoft.WindowsDesktop.App.WPF"
-        ]
       }
     }
   },
@@ -231,6 +231,22 @@
         "useSharedDesignerContext.txt"
       ]
     },
+    "SixLabors.ImageSharp/3.1.4": {
+      "sha512": "lFIdxgGDA5iYkUMRFOze7BGLcdpoLFbR+a20kc1W7NepvzU7ejtxtWOg9RvgG7kb9tBoJ3ONYOK6kLil/dgF1w==",
+      "type": "package",
+      "path": "sixlabors.imagesharp/3.1.4",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE",
+        "build/SixLabors.ImageSharp.props",
+        "lib/net6.0/SixLabors.ImageSharp.dll",
+        "lib/net6.0/SixLabors.ImageSharp.xml",
+        "sixlabors.imagesharp.128.png",
+        "sixlabors.imagesharp.3.1.4.nupkg.sha512",
+        "sixlabors.imagesharp.nuspec"
+      ]
+    },
     "System.Drawing.Common/8.0.1": {
       "sha512": "x0rAZECxIGx/YVjN28YRdpqka0+H7YMN9741FUDzipXPDzesd60gef/LI0ZCOcYSDsacTLTHvMAvxHG+TjbNNQ==",
       "type": "package",
@@ -270,31 +286,13 @@
         "system.drawing.common.nuspec",
         "useSharedDesignerContext.txt"
       ]
-    },
-    "XamlAnimatedGif/2.3.0": {
-      "sha512": "MfEQ2abw2S6PKstH/MXAGuiJzaOsd6qv+nm552KdM/+EiaOV1O2X51hcgoDiM8pDCuOvvu1gjXv8d384ftEerw==",
-      "type": "package",
-      "path": "xamlanimatedgif/2.3.0",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "assets/xamlanimatedgif.png",
-        "lib/net45/XamlAnimatedGif.dll",
-        "lib/net45/XamlAnimatedGif.pdb",
-        "lib/net5.0-windows7.0/XamlAnimatedGif.dll",
-        "lib/net5.0-windows7.0/XamlAnimatedGif.pdb",
-        "lib/netcoreapp3.1/XamlAnimatedGif.dll",
-        "lib/netcoreapp3.1/XamlAnimatedGif.pdb",
-        "xamlanimatedgif.2.3.0.nupkg.sha512",
-        "xamlanimatedgif.nuspec"
-      ]
     }
   },
   "projectFileDependencyGroups": {
-    "net6.0-windows7.0": [
+    "net7.0-windows7.0": [
       "Microsoft.Web.WebView2 >= 1.0.2210.55",
-      "System.Drawing.Common >= 8.0.1",
-      "XamlAnimatedGif >= 2.3.0"
+      "SixLabors.ImageSharp >= 3.1.4",
+      "System.Drawing.Common >= 8.0.1"
     ]
   },
   "packageFolders": {
@@ -304,11 +302,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\casey\\source\\repos\\ImageViewer\\ImageViewer\\ImageViewer.csproj",
+      "projectUniqueName": "H:\\Windows Backup\\dotnet\\repos\\ImageViewer\\ImageViewer\\ImageViewer.csproj",
       "projectName": "ImageViewer",
-      "projectPath": "C:\\Users\\casey\\source\\repos\\ImageViewer\\ImageViewer\\ImageViewer.csproj",
+      "projectPath": "H:\\Windows Backup\\dotnet\\repos\\ImageViewer\\ImageViewer\\ImageViewer.csproj",
       "packagesPath": "C:\\Users\\casey\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\casey\\source\\repos\\ImageViewer\\ImageViewer\\obj\\",
+      "outputPath": "H:\\Windows Backup\\dotnet\\repos\\ImageViewer\\ImageViewer\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -319,16 +317,15 @@
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
-        "net6.0-windows"
+        "net7.0-windows7.0"
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Users\\casey\\Downloads\\XamlAnimatedGif-master\\XamlAnimatedGif\\bin\\Release": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net6.0-windows7.0": {
-          "targetAlias": "net6.0-windows",
+        "net7.0-windows7.0": {
+          "targetAlias": "net7.0-windows7.0",
           "projectReferences": {}
         }
       },
@@ -344,20 +341,20 @@
       }
     },
     "frameworks": {
-      "net6.0-windows7.0": {
-        "targetAlias": "net6.0-windows",
+      "net7.0-windows7.0": {
+        "targetAlias": "net7.0-windows7.0",
         "dependencies": {
           "Microsoft.Web.WebView2": {
             "target": "Package",
             "version": "[1.0.2210.55, )"
           },
+          "SixLabors.ImageSharp": {
+            "target": "Package",
+            "version": "[3.1.4, )"
+          },
           "System.Drawing.Common": {
             "target": "Package",
             "version": "[8.0.1, )"
-          },
-          "XamlAnimatedGif": {
-            "target": "Package",
-            "version": "[2.3.0, )"
           }
         },
         "imports": [
@@ -379,7 +376,7 @@
             "privateAssets": "none"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300\\RuntimeIdentifierGraph.json"
       }
     }
   }

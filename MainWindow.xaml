@@ -48,7 +48,15 @@
             <Grid Margin="0,0,0,0">
                 <Button Name="PrevButton" Content="Prev" Click="PrevButton_Click"  HorizontalAlignment="Left" VerticalAlignment="Center" Width="58" Height="30" Margin="120,1,1,1"/>
                 <Button Name="NextButton" Content="Next" Click="NextButton_Click"  HorizontalAlignment="Left" VerticalAlignment="Center" Width="58" Height="30" Margin="180,1,1,1" />
-                <Slider Name="GifSlider" Width="100" Height="30" SmallChange="1" ValueChanged="GifSlider_ValueChanged" Visibility="Hidden" />
+                <Slider Name="GifSlider" Width="100" Height="30" SmallChange="1" ValueChanged="GifSlider_ValueChanged"  PreviewMouseDown="GifSlider_MouseDown" PreviewMouseUp="GifSlider_MouseUp" 
+                        Visibility="Hidden" />
+                <ComboBox Margin="500,1,1,1" Name="GifSpeedComboBox" HorizontalAlignment="Left" VerticalAlignment="Center" Width="100" Height="30" Visibility="Hidden" 
+                          SelectionChanged="GifSpeedComboBox_SelectionChanged">
+                    <ComboBoxItem Content="0.5x"></ComboBoxItem>
+                    <ComboBoxItem Content="1x"></ComboBoxItem>
+                    <ComboBoxItem Content="1.5x"></ComboBoxItem>
+                    <ComboBoxItem Content="2x"></ComboBoxItem>
+                </ComboBox>
                 <TextBlock Name="FilePathDisplay" 
                          HorizontalAlignment="Right"  
                          VerticalAlignment="Center" 

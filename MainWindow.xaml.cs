@@ -10,43 +10,38 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using System.Diagnostics;
-using ImageViewer.UIElements;
 using System.IO;
 using ImageViewer.Util;
-using System.Security.Policy;
-using System.Runtime.CompilerServices;
 using System.Security.Principal;
-using System.Reflection;
-using ImageViewer.Properties;
 using System.Threading;
 using System.Threading.Tasks;
-using ImageViewer.Logging;
-using System.CodeDom;
-using System.Drawing;
 using ImageViewer.Util.Extensions;
 using ImageViewer.Util.HttpUtil;
 using System.Text.RegularExpressions;
-using System.Windows.Media;
-using System.Drawing.Imaging;
-using System.Windows.Media.Animation;
-using System.Windows.Automation;
-using XamlAnimatedGif;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Diagnostics;
+
 
 namespace ImageViewer
 {
     public partial class MainWindow : Window
     {
+        //For phone metadata 
         private const string ORIENTATION_QUERY = "System.Photo.Orientation";
 
         private int currImgInd;
         private List<string>? imgFiles;
 
         private bool imageDoneLoading = false;
-        private FileSystemWatcher fileSystemWatcher;
 
         private List<CancellationTokenSource> cancelTokens = new List<CancellationTokenSource>();
         private List<Thread> threads = new List<Thread>();
 
+        public static readonly SemaphoreSlim gifSS = new SemaphoreSlim(1, 1);
+        private GifPlayer gifPlayer;
+
+
+        private CancellationTokenSource gifCancelToken = new CancellationTokenSource();
 
         public MainWindow()
         {
@@ -55,8 +50,16 @@ namespace ImageViewer
 
             MouseWheel += MainViewControl.CanvasMouseWheel;
             Closed += MainWindow_Closed;
+
+            //Init player for gifs
+            gifPlayer = new GifPlayer();
+            gifPlayer.FrameChanged += GifPlayer_FrameChanged;
+            gifPlayer.GifCanceled += GifPlayer_GifCanceled;
+            gifPlayer.GifPlaying += GifPlayer_GifPlaying;
+            gifPlayer.DonePlaying += GifPlayer_DonePlaying; ;
         }
 
+        
 
         private void MainWindow_Closed(object? sender, EventArgs e)
         {
@@ -83,51 +86,8 @@ namespace ImageViewer
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            //Enable dark mode
             EnableDarkmode.UseImmersiveDarkMode(new WindowInteropHelper(this).Handle, true);
-
-            //await ConfigManager.InitConfig();
-
-            ////If default extensions not set, set them (ask for admin privledges)
-            //if (ConfigManager.GetValue("default_ext") == null)
-            //{
-            //    if (!IsRunningAsAdministrator())
-            //    {
-            //        string startingPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase);
-            //        string nameOfProgram = typeof(MainWindow).Assembly.GetName().Name + ".exe";
-
-            //        // Setting up start info of the new process of the same application
-            //        ProcessStartInfo processStartInfo = new ProcessStartInfo()
-            //        {
-            //            FileName = $"{startingPath}/{nameOfProgram}"
-            //        };
-
-            //        // Using operating shell and setting the ProcessStartInfo.Verb to “runas” will let it run as admin
-            //        processStartInfo.UseShellExecute = true;
-            //        processStartInfo.Verb = "runas";
-
-            //        // Start the application as new process
-            //        try
-            //        {
-            //            Process.Start(processStartInfo);
-            //        } catch (Exception exc)
-            //        {
-            //            Debug.WriteLine(exc.StackTrace);
-            //        }
-            //        finally
-            //        {
-            //            // Shut down the current (old) process
-            //            Application.Current.Shutdown();
-            //        }
-
-            //        return;
-            //    } else if (ConfigManager.GetValue("default_ext") == null)
-            //    {
-            //        DefaultFileExtensionManager.SetDefaultFileExtensions();
-
-            //        ConfigManager.CONFIG_INFO["default_ext"] = "yes";
-            //        await ConfigManager.WriteConfig();
-            //    }
-            //}
 
             //Sometimes, longer file args will be shortened. We want the full path to the file
             await Dispatcher.BeginInvoke(async () =>
@@ -148,10 +108,10 @@ namespace ImageViewer
                 }
                 else
                 {
-                    string fileArg = args[1].Replace("users", "Users");
+                    string fileArg = args[1].ToLower();
 
                     imgFiles = await Win32Util.GetAllFilesFromExplorer(fileArg);
-                    if (!imgFiles.Any())
+                    if (!imgFiles!.Any())
                     {
                         MessageBox.Show("No image files were found", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -161,16 +121,6 @@ namespace ImageViewer
                         return;
                     }
 
-                    ////Gets the base path to all the files (just get the first one)
-                    //string? basePath = Path.GetDirectoryName(imgFiles[0]);
-
-                    ////Determine when new files are added to the folder so that we can update the img files accordingly 
-                    //fileSystemWatcher = new FileSystemWatcher(basePath);
-                    //fileSystemWatcher.EnableRaisingEvents = true;
-                    //fileSystemWatcher.Changed += FileSystemWatcher_Changed;
-                    //fileSystemWatcher.Deleted += FileSystemWatcher_Deleted;
-
-
                     imgFiles = imgFiles.Where(imgFile => IsValidImgFile(imgFile)).ToList();
                     currImgInd = imgFiles.IndexOf(fileArg);
                 }
@@ -178,140 +128,28 @@ namespace ImageViewer
                 await Task.Run(() => SetMainImage());
             }, System.Windows.Threading.DispatcherPriority.ContextIdle);
         }
-
-
-        private async void FileSystemWatcher_Deleted(object sender, FileSystemEventArgs e)
+                        
+      
+        private void LoadImgThread(Rotation rotation = Rotation.Rotate0)
         {
-            //if (imgFiles!.Contains(e.FullPath))
-            //{
-            //    string currImgPath = imgFiles[currImgInd];
-            //    int prevInd = currImgInd;
-
-            //    imgFiles.Remove(e.FullPath);
-            //    currImgInd = imgFiles!.IndexOf(currImgPath);
-
-            //    if (!imgFiles.Any())
-            //    {
-            //        Dispatcher.Invoke(Application.Current.Shutdown);
-            //        return;
-            //    }
-
-            //    if (currImgInd == -1)
-            //    {
-            //        //If file was on the last, set it to the last, the first to the first, if it was neither, then the one to the left
-            //        currImgInd = (prevInd == imgFiles.Count + 1) ? imgFiles.Count - 1 : (prevInd == 0) ? 0 : prevInd - 1;
-
-            //        await Task.Run(() => SetMainImage());
-            //    }
-            //}
-        }
-
-
-        private async void FileSystemWatcher_Changed(object sender, FileSystemEventArgs e)
-        {
-            //FileStream file = null;
-            //try
-            //{
-            //    await Task.Delay(100);
-            //    file = File.Open(e.FullPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            //}
-            //catch (IOException)
-            //{
-            //    return;
-            //}
-
-            //if (imgFiles!.Contains(e.FullPath)) return;
-
-            ////If image files don't contain the newly added image, then search through the directory again
-            //await Dispatcher.BeginInvoke(async () =>
-            //{
-            //    string currImgPath = imgFiles[currImgInd];
-
-            //    var newImgFiles = await Win32Util.GetAllFilesFromExplorer(e.FullPath);
-            //    newImgFiles = newImgFiles.Where(imgFile => IsValidImgFile(imgFile)).ToList();
-            //    currImgInd = newImgFiles.IndexOf(currImgPath);
-
-            //    imgFiles = newImgFiles;
-
-            //    string fileName = Path.GetFileName(imgFiles[currImgInd]);
-            //    Title = $"{fileName} - [{currImgInd + 1}/{imgFiles.Count}]";
-            //});
-        }
-
-        private async void SetMainImage()
-        {
-            foreach (var token in cancelTokens) token.Cancel();
-            cancelTokens.Clear();
-
-            foreach (var worker in threads) worker.Interrupt();
-            threads.Clear();
-
-            MainViewControl.ImgSrc = null;
-            imageDoneLoading = false;
-
-            await Dispatcher.BeginInvoke(() =>
-            {
-                string fileName = Path.GetFileName(imgFiles![currImgInd]);
-                Title = $"{fileName} - [{currImgInd + 1}/{imgFiles.Count}]";
-                FilePathDisplay.Text = imgFiles![currImgInd];
-
-                //MainViewControl.MainImage.Source = null;
-                //MainViewControl.ImgSrc = null;
-            });
-
-
             var cancelToken = new CancellationTokenSource();
             cancelTokens.Add(cancelToken);
 
-
-            //var frameChangedHandler = new EventHandler((object? sender, EventArgs e) =>
-            //{
-            //    var animator = AnimationBehavior.GetAnimator(MainViewControl.MainImage);
-            //    GifSlider.Value = animator.CurrentFrameIndex;
-            //});
-
-            //var gifLoadedHandler = new RoutedEventHandler((object sender, RoutedEventArgs e) =>
-            //{
-            //    var animator = AnimationBehavior.GetAnimator(MainViewControl.MainImage);
-            //    animator.CurrentFrameChanged += frameChangedHandler;
-
-            //    GifSlider.Maximum = animator.FrameCount;
-            //    GifSlider.Minimum = 0;
-            //});
-
-            //await Dispatcher.BeginInvoke(() =>
-            //{
-            //    var animator = AnimationBehavior.GetAnimator(MainViewControl.MainImage);
-            //    if (animator != null)
-            //    {
-            //        animator.CurrentFrameChanged -= frameChangedHandler;
-            //        AnimationBehavior.RemoveLoadedHandler(MainViewControl.MainImage, gifLoadedHandler);
-            //        AnimationBehavior.SetSourceUri(MainViewControl.MainImage, null);
-            //    }
-
-            //    GifSlider.Visibility = Visibility.Hidden;
-            //});
-
-          
             var thread = new Thread(async () =>
             {
                 try
                 {
-                    System.Windows.Controls.Image imgObj = null;
-
                     MainViewControl.ImgSrc = Win32Util.ExtractThumbnail(imgFiles![currImgInd], new System.Drawing.Size(200, 200), SIIGBF.SIIGBF_THUMBNAILONLY);
 
                     await Dispatcher.BeginInvoke(() =>
                     {
                         MainViewControl.MainImage.Source = MainViewControl.ImgSrc;
                         MainViewControl.ApplyDimensions();
-
-                        imgObj = new System.Windows.Controls.Image();
                     }, System.Windows.Threading.DispatcherPriority.ContextIdle);
 
 
                     BitmapImage img = await Task.Run(() => GetBitmapImage(imgFiles![currImgInd], 
-                        cancelToken), cancelToken.Token); 
+                        cancelToken, defaultRot: rotation), cancelToken.Token);
 
                     cancelToken.Token.ThrowIfCancellationRequested();
                     MainViewControl.ImgSrc = img;
@@ -322,23 +160,24 @@ namespace ImageViewer
                         {
                             if (Path.GetExtension(imgFiles[currImgInd]) == ImgExtensions.GIF)
                             {
-                                //ImageBehavior.SetAnimatedSource(MainViewControl.MainImage, img);
-                                //GifSlider.Visibility = Visibility.Visible;
+                                //MainViewControl.MainImage.Source = MainViewControl.ImgSrc;
 
-                                AnimationBehavior.SetSourceUri(MainViewControl.MainImage, new Uri(imgFiles[currImgInd]));
-                                //AnimationBehavior.AddLoadedHandler(MainViewControl.MainImage, gifLoadedHandler);
+                                await gifPlayer.InitDrawing(imgFiles[currImgInd], cancelToken);
+                                MainViewControl.ApplyDimensions();
+                                //await gifPlayer.UpdateFrame(20);
+                                await gifPlayer.Play(cancelToken);
+                            
                             }
                             else
                             {
-                               
-
                                 MainViewControl.MainImage.Source = MainViewControl.ImgSrc;
                             }
 
                             MainViewControl.ApplyDimensions();
                             imageDoneLoading = true;
 
-                        }catch (Exception e)
+                        }
+                        catch (Exception e)
                         {
                             //var animator = AnimationBehavior.GetAnimator(MainViewControl.MainImage);
                             //if (animator != null)
@@ -360,12 +199,127 @@ namespace ImageViewer
             thread.Join();
         }
 
+        private void GifSpeedComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var item = GifSpeedComboBox.SelectedItem as ComboBoxItem;
+            if (item == null) return;
+
+            string? content = item.Content.ToString();
+            if (string.IsNullOrEmpty(content)) return;
+
+            double speed = 1;
+            switch (content)
+            {
+                case "0.5x":
+                    speed = 0.5;
+                    break;
+                case "1x":
+                    speed = 1;
+                    break;
+                case "1.5x":
+                    speed = 1.5;
+                    break;
+                case "2x":
+                    speed = 2;
+                    break;
+            }
+            gifPlayer.ChangeSpeed(speed);
+        }
+
+        private async void GifSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            await gifPlayer.UpdateFrame((int)GifSlider.Value);
+        }
+
+        private async void GifSlider_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            gifPlayer.Pause();
+        }
+
+        private void GifSlider_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            gifPlayer.Resume();
+        }
+
+        private async void GifPlayer_DonePlaying(object? sender, EventArgs e)
+        {
+            await Dispatcher.BeginInvoke(() =>
+            {
+                GifSlider.Visibility = Visibility.Hidden;
+                GifSpeedComboBox.Visibility = Visibility.Hidden;
+            });
+        }
+
+        private async void GifPlayer_GifPlaying(object? sender, EventArgs e)
+        {
+            await Dispatcher.BeginInvoke(() => 
+            { 
+                GifSlider.Maximum = gifPlayer.MaxFrames - 1;
+                GifSlider.Visibility = Visibility.Visible;
+                GifSpeedComboBox.Visibility = Visibility.Visible;
+                GifSpeedComboBox.SelectedItem = null;
+            });
+        }
+
+        private async void GifPlayer_GifCanceled(object? sender, EventArgs e)
+        {
+            await Dispatcher.BeginInvoke(() =>
+            {
+                GifSlider.Visibility = Visibility.Hidden;
+                GifSpeedComboBox.Visibility = Visibility.Hidden;
+            });
+        }
+
+        private void GifPlayer_FrameChanged(object? sender, GifFrameEventArgs e)
+        {
+            Dispatcher.Invoke(() =>
+            {
+                MainViewControl.MainImage.Source = e.FrameImg;
+                GifSlider.Value = e.CurrFrame;
+                MainViewControl.ApplyDimensions(resetZoom: false, reset: false);
+            });
+        }
+
+        private void DestroyCancelTokensAndThreads()
+        {
+            foreach (var token in cancelTokens)
+            {
+                token.Cancel();
+                token.Dispose();
+            }
+            cancelTokens.Clear();
+
+            foreach (var worker in threads) worker.Interrupt();
+            threads.Clear();
+        }
+
+
+        private async void SetMainImage()
+        {
+            DestroyCancelTokensAndThreads();
+
+            if (!File.Exists(imgFiles![currImgInd])) imgFiles.Remove(imgFiles![currImgInd]);
+
+            MainViewControl.ImgPath = imgFiles![currImgInd];
+            MainViewControl.ImgSrc = null;
+            imageDoneLoading = false;
+
+            await Dispatcher.BeginInvoke(() =>
+            {
+                string fileName = Path.GetFileName(imgFiles![currImgInd]);
+                Title = $"{fileName} - [{currImgInd + 1}/{imgFiles.Count}]";
+                FilePathDisplay.Text = imgFiles![currImgInd];
+            });
+
+            LoadImgThread();
+
+        }
+
 
         private BitmapImage GetBitmapImage(string filePath, CancellationTokenSource token, bool useFileStream = true, Rotation defaultRot = Rotation.Rotate0)
         {
             //If image has metadata that dictates rotation, reset the rotation so that it always results in the original orientation
             //For images produced by mobile phones usually...
-
             if (useFileStream)
             {
                 Rotation rotation = defaultRot;
@@ -401,7 +355,6 @@ namespace ImageViewer
 
                 image.BeginInit();
                 image.StreamSource = fileStream;
-                //image.CreateOptions = BitmapCreateOptions.DelayCreation;
                 image.CacheOption = BitmapCacheOption.OnLoad;
                 image.Rotation = rotation;
                 image.EndInit();
@@ -409,13 +362,12 @@ namespace ImageViewer
                 image.Freeze();
 
                 return image;
-            }else
+            } else
             {
                 var image = new BitmapImage();
 
                 image.BeginInit();
                 image.UriSource = new Uri(filePath);
-                //image.CreateOptions = BitmapCreateOptions.DelayCreation;
                 image.CacheOption = BitmapCacheOption.OnLoad;
                 image.EndInit();
 
@@ -446,17 +398,23 @@ namespace ImageViewer
 
         private void DeletePrompt()
         {
-            var resp = MessageBox.Show($"Are you sure you want to delete {Path.GetFileName(imgFiles[currImgInd])}", "File deletion", 
+            var resp = MessageBox.Show($"Are you sure you want to delete {Path.GetFileName(imgFiles[currImgInd])}", "File deletion",
                 MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
 
             if (resp == MessageBoxResult.Yes)
             {
+                if (gifPlayer.IsPlaying)
+                {
+                    gifPlayer.Pause();
+                    gifPlayer.Clean();
+                }
+
                 string fileToDel = imgFiles[currImgInd];
                 File.Delete(fileToDel);
 
                 imgFiles.Remove(fileToDel);
 
-                MoveFoward();
+                MoveBack();
                 SetMainImage();
             }
         }
@@ -483,7 +441,7 @@ namespace ImageViewer
             
             if (e.Key == Key.R)
             {
-                if (imageDoneLoading) MainViewControl.Rotate(90);
+                MainViewControl.Rotate();
             }
             if (e.Key == Key.Delete)
             {
@@ -505,6 +463,9 @@ namespace ImageViewer
         private void Window_Closing(object sender, CancelEventArgs e)
         {
             this.SavePlacement();
+
+            DestroyCancelTokensAndThreads();
+            gifPlayer.Clean();
         }
 
         private async void SearchMenuItem_Click(object sender, RoutedEventArgs e)
@@ -557,14 +518,6 @@ namespace ImageViewer
         private void CopyFullPathMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(imgFiles![currImgInd]);
-        }
-
-        private void GifSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            //var animator = AnimationBehavior.GetAnimator(MainViewControl.MainImage);
-            //if (animator == null) return;
-
-            //animator.Seek((int)GifSlider.Value);
         }
     }
 }
