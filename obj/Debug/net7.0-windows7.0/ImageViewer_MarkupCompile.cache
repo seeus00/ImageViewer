@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET7_0;NETCOREAPP
 H:\Windows Backup\dotnet\repos\ImageViewer\ImageViewer\App.xaml
-4552326200
+5-431924093
 41974306131
-35-821512300
-204-498497569
-MainWindow.xaml;UIElements\FilePropertiesWindow.xaml;UIElements\SaucenaoWindow.xaml;UIElements\ViewerControl.xaml;
+37-1793295788
+204-1526952313
+MainWindow.xaml;UIElements\DialogInput.xaml;UIElements\FilePropertiesWindow.xaml;UIElements\SaucenaoWindow.xaml;UIElements\ViewerControl.xaml;
 
 False
 

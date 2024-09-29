@@ -2,6 +2,19 @@
   "version": 3,
   "targets": {
     "net7.0-windows7.0": {
+      "FluentFTP/51.1.0": {
+        "type": "package",
+        "compile": {
+          "lib/net6.0/FluentFTP.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net6.0/FluentFTP.dll": {
+            "related": ".xml"
+          }
+        }
+      },
       "Microsoft.Web.WebView2/1.0.2210.55": {
         "type": "package",
         "compile": {
@@ -66,22 +79,6 @@
           }
         }
       },
-      "SixLabors.ImageSharp/3.1.4": {
-        "type": "package",
-        "compile": {
-          "lib/net6.0/SixLabors.ImageSharp.dll": {
-            "related": ".xml"
-          }
-        },
-        "runtime": {
-          "lib/net6.0/SixLabors.ImageSharp.dll": {
-            "related": ".xml"
-          }
-        },
-        "build": {
-          "build/SixLabors.ImageSharp.props": {}
-        }
-      },
       "System.Drawing.Common/8.0.1": {
         "type": "package",
         "dependencies": {
@@ -104,6 +101,31 @@
     }
   },
   "libraries": {
+    "FluentFTP/51.1.0": {
+      "sha512": "Vm3eGvHACns0zsKfCMCZdZSFKYu2ajV/GeRk4vfgy6d5AR+WqSUjaSWbbhkmS01A8OMjZHFLduPH7nxwGvlcpQ==",
+      "type": "package",
+      "path": "fluentftp/51.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "LICENSE.TXT",
+        "fluentftp.51.1.0.nupkg.sha512",
+        "fluentftp.nuspec",
+        "lib/net462/FluentFTP.dll",
+        "lib/net462/FluentFTP.xml",
+        "lib/net472/FluentFTP.dll",
+        "lib/net472/FluentFTP.xml",
+        "lib/net5.0/FluentFTP.dll",
+        "lib/net5.0/FluentFTP.xml",
+        "lib/net6.0/FluentFTP.dll",
+        "lib/net6.0/FluentFTP.xml",
+        "lib/netstandard2.0/FluentFTP.dll",
+        "lib/netstandard2.0/FluentFTP.xml",
+        "lib/netstandard2.1/FluentFTP.dll",
+        "lib/netstandard2.1/FluentFTP.xml",
+        "logo-nuget.png"
+      ]
+    },
     "Microsoft.Web.WebView2/1.0.2210.55": {
       "sha512": "pb5kuzl8TQm+ztzOnOm/qX75DXXjOQMdKlcs2hyizbZobiGzJcMcIhpmMmgg1cTGYwof2fVhlC809YScvDbm3w==",
       "type": "package",
@@ -231,22 +253,6 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "SixLabors.ImageSharp/3.1.4": {
-      "sha512": "lFIdxgGDA5iYkUMRFOze7BGLcdpoLFbR+a20kc1W7NepvzU7ejtxtWOg9RvgG7kb9tBoJ3ONYOK6kLil/dgF1w==",
-      "type": "package",
-      "path": "sixlabors.imagesharp/3.1.4",
-      "files": [
-        ".nupkg.metadata",
-        ".signature.p7s",
-        "LICENSE",
-        "build/SixLabors.ImageSharp.props",
-        "lib/net6.0/SixLabors.ImageSharp.dll",
-        "lib/net6.0/SixLabors.ImageSharp.xml",
-        "sixlabors.imagesharp.128.png",
-        "sixlabors.imagesharp.3.1.4.nupkg.sha512",
-        "sixlabors.imagesharp.nuspec"
-      ]
-    },
     "System.Drawing.Common/8.0.1": {
       "sha512": "x0rAZECxIGx/YVjN28YRdpqka0+H7YMN9741FUDzipXPDzesd60gef/LI0ZCOcYSDsacTLTHvMAvxHG+TjbNNQ==",
       "type": "package",
@@ -290,8 +296,8 @@
   },
   "projectFileDependencyGroups": {
     "net7.0-windows7.0": [
+      "FluentFTP >= 51.1.0",
       "Microsoft.Web.WebView2 >= 1.0.2210.55",
-      "SixLabors.ImageSharp >= 3.1.4",
       "System.Drawing.Common >= 8.0.1"
     ]
   },
@@ -344,13 +350,13 @@
       "net7.0-windows7.0": {
         "targetAlias": "net7.0-windows7.0",
         "dependencies": {
+          "FluentFTP": {
+            "target": "Package",
+            "version": "[51.1.0, )"
+          },
           "Microsoft.Web.WebView2": {
             "target": "Package",
             "version": "[1.0.2210.55, )"
-          },
-          "SixLabors.ImageSharp": {
-            "target": "Package",
-            "version": "[3.1.4, )"
           },
           "System.Drawing.Common": {
             "target": "Package",

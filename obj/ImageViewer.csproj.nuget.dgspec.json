@@ -49,13 +49,13 @@
         "net7.0-windows7.0": {
           "targetAlias": "net7.0-windows7.0",
           "dependencies": {
+            "FluentFTP": {
+              "target": "Package",
+              "version": "[51.1.0, )"
+            },
             "Microsoft.Web.WebView2": {
               "target": "Package",
               "version": "[1.0.2210.55, )"
-            },
-            "SixLabors.ImageSharp": {
-              "target": "Package",
-              "version": "[3.1.4, )"
             },
             "System.Drawing.Common": {
               "target": "Package",

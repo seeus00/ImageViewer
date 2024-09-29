@@ -1,0 +1,16 @@
+﻿<Window x:Class="ImageViewer.UIElements.DialogInput"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImageViewer.UIElements"
+        mc:Ignorable="d"
+        Title="DialogInput" Height="150" Width="200">
+    <StackPanel>
+        <TextBox x:Name="HostTextBox" Text="192.168.1.16"/>
+        <TextBox x:Name="PortTextBox" Text="4327"/>
+        <TextBox x:Name="UsernameTextBox" Text="pc" />
+        <TextBox x:Name="PasswordTextBox" Text="157525"/>
+        <Button Content="OK" Click="OKButton_Click" />
+    </StackPanel>
+</Window>

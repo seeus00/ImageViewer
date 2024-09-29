@@ -1,6 +1,4 @@
-﻿using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -8,20 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Threading;
-using System.Windows.Controls;
-using SixLabors.ImageSharp.Formats.Jpeg;
 using System.IO;
 using System.Windows.Media.Imaging;
 using System.Windows.Media;
 using System.Xml.Linq;
 using System.Transactions;
-using SixLabors.ImageSharp.Diagnostics;
 using System.Drawing.Imaging;
 using System.Drawing;
-using static System.Net.Mime.MediaTypeNames;
-using System.Timers;
-using System.Windows;
 
 namespace ImageViewer.Util
 {

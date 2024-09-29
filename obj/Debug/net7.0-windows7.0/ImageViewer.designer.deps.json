@@ -6,6 +6,14 @@
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v7.0": {
+      "FluentFTP/51.1.0": {
+        "runtime": {
+          "lib/net6.0/FluentFTP.dll": {
+            "assemblyVersion": "51.1.0.0",
+            "fileVersion": "51.1.0.0"
+          }
+        }
+      },
       "Microsoft.Web.WebView2/1.0.2210.55": {
         "runtime": {
           "lib/netcoreapp3.0/Microsoft.Web.WebView2.Core.dll": {
@@ -55,14 +63,6 @@
           }
         }
       },
-      "SixLabors.ImageSharp/3.1.4": {
-        "runtime": {
-          "lib/net6.0/SixLabors.ImageSharp.dll": {
-            "assemblyVersion": "3.0.0.0",
-            "fileVersion": "3.1.4.0"
-          }
-        }
-      },
       "System.Drawing.Common/8.0.1": {
         "dependencies": {
           "Microsoft.Win32.SystemEvents": "8.0.0"
@@ -77,6 +77,13 @@
     }
   },
   "libraries": {
+    "FluentFTP/51.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-Vm3eGvHACns0zsKfCMCZdZSFKYu2ajV/GeRk4vfgy6d5AR+WqSUjaSWbbhkmS01A8OMjZHFLduPH7nxwGvlcpQ==",
+      "path": "fluentftp/51.1.0",
+      "hashPath": "fluentftp.51.1.0.nupkg.sha512"
+    },
     "Microsoft.Web.WebView2/1.0.2210.55": {
       "type": "package",
       "serviceable": true,
@@ -90,13 +97,6 @@
       "sha512": "sha512-9opKRyOKMCi2xJ7Bj7kxtZ1r9vbzosMvRrdEhVhDz8j8MoBGgB+WmC94yH839NPH+BclAjtQ/pyagvi/8gDLkw==",
       "path": "microsoft.win32.systemevents/8.0.0",
       "hashPath": "microsoft.win32.systemevents.8.0.0.nupkg.sha512"
-    },
-    "SixLabors.ImageSharp/3.1.4": {
-      "type": "package",
-      "serviceable": true,
-      "sha512": "sha512-lFIdxgGDA5iYkUMRFOze7BGLcdpoLFbR+a20kc1W7NepvzU7ejtxtWOg9RvgG7kb9tBoJ3ONYOK6kLil/dgF1w==",
-      "path": "sixlabors.imagesharp/3.1.4",
-      "hashPath": "sixlabors.imagesharp.3.1.4.nupkg.sha512"
     },
     "System.Drawing.Common/8.0.1": {
       "type": "package",

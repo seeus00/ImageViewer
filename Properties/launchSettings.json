@@ -2,7 +2,7 @@
   "profiles": {
     "ImageViewer": {
       "commandName": "Project",
-      "commandLineArgs": "\"C:\\Users\\casey\\Pictures\\__original_drawn_by_toba_kuti__df19e266c1170678ab55830688d65285.gif\"",
+      "commandLineArgs": "\"ftp://pc@192.168.1.16:4327/device/Pictures/1640968865449.jpg\"",
       "nativeDebugging": false
     }
   }

@@ -42,4 +42,6 @@ H:\Windows Backup\dotnet\repos\ImageViewer\ImageViewer\obj\Debug\net7.0-windows7
 H:\Windows Backup\dotnet\repos\ImageViewer\ImageViewer\obj\Debug\net7.0-windows7.0\ImageViewer.pdb
 H:\Windows Backup\dotnet\repos\ImageViewer\ImageViewer\obj\Debug\net7.0-windows7.0\ImageViewer.genruntimeconfig.cache
 H:\Windows Backup\dotnet\repos\ImageViewer\ImageViewer\obj\Debug\net7.0-windows7.0\ref\ImageViewer.dll
-H:\Windows Backup\dotnet\repos\ImageViewer\ImageViewer\bin\Debug\net7.0-windows7.0\SixLabors.ImageSharp.dll
+H:\Windows Backup\dotnet\repos\ImageViewer\ImageViewer\bin\Debug\net7.0-windows7.0\FluentFTP.dll
+H:\Windows Backup\dotnet\repos\ImageViewer\ImageViewer\obj\Debug\net7.0-windows7.0\UIElements\DialogInput.g.cs
+H:\Windows Backup\dotnet\repos\ImageViewer\ImageViewer\obj\Debug\net7.0-windows7.0\UIElements\DialogInput.baml

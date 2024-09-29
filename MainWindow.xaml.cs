@@ -18,8 +18,10 @@ using System.Threading.Tasks;
 using ImageViewer.Util.Extensions;
 using ImageViewer.Util.HttpUtil;
 using System.Text.RegularExpressions;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Diagnostics;
+using ImageViewer.Util.FTP;
+using ImageViewer.UIElements;
+using System.IO.Pipes;
+using System.Windows.Media.Media3D;
 
 
 namespace ImageViewer
@@ -92,12 +94,17 @@ namespace ImageViewer
             //Sometimes, longer file args will be shortened. We want the full path to the file
             await Dispatcher.BeginInvoke(async () =>
             {
-                var args = Environment.GetCommandLineArgs()
-                   .Where(arg => File.Exists(arg))
-                   .Select(arg => new FileInfo(arg).FullName)
-                   .ToArray();
+                var cliArgs = Environment.GetCommandLineArgs()
+                   .Where(arg => File.Exists(arg) || arg.StartsWith("ftp") || arg.StartsWith("\\\\"));
 
-                if (args.Length < 2 || !IsValidImgFile(args[1]))
+                var args = new List<string>();
+                foreach (string arg in cliArgs)
+                {
+                    //handle whether or not the file is a ftp or network item
+                    args.Add(!arg.StartsWith("ftp") && !arg.StartsWith("\\\\") ? new FileInfo(arg).FullName : arg);
+                }
+
+                if (args.Count < 2 || !IsValidImgFile(args[1]))
                 {
                     MessageBox.Show("An image file was not loaded or was not valid", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
 
@@ -121,7 +128,7 @@ namespace ImageViewer
                         return;
                     }
 
-                    imgFiles = imgFiles.Where(imgFile => IsValidImgFile(imgFile)).ToList();
+                    imgFiles = imgFiles!.Where(imgFile => IsValidImgFile(imgFile)).ToList();
                     currImgInd = imgFiles.IndexOf(fileArg);
                 }
 
@@ -298,6 +305,37 @@ namespace ImageViewer
         {
             DestroyCancelTokensAndThreads();
 
+            //Load ftp image
+            if (imgFiles![currImgInd].StartsWith("ftp"))
+            {
+                string host = imgFiles![currImgInd].Split('/')[2].Split('@').Last();
+                if (!FTPUtil.IsConnected(host))
+                {
+                    await Dispatcher.BeginInvoke(() =>
+                    {
+                        var dialog = new DialogInput();
+                        if (dialog.ShowDialog() == true)
+                        {
+                            FTPUtil.Connect(dialog.HostText, int.Parse(dialog.PortText), dialog.UsernameText, dialog.PasswordText);
+                        }
+                        
+                    });
+
+                    string newPath = "/" + string.Join('/', imgFiles![currImgInd].Split('/').Skip(3));
+                    byte[] bytes = FTPUtil.GetBytes(newPath);
+
+                    //Download file to pictures path
+                    string fileName = Path.GetFileName(newPath);
+                    string picturesPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+                    string newFilePath = $"{picturesPath}\\{fileName}";
+                    using var fileStream = new FileStream(newFilePath, FileMode.OpenOrCreate);
+                    fileStream.Write(bytes, 0, bytes.Length);
+
+                    imgFiles.Remove(imgFiles![currImgInd]);
+                    imgFiles.Insert(currImgInd, newFilePath);
+                }
+            }
+
             if (!File.Exists(imgFiles![currImgInd])) imgFiles.Remove(imgFiles![currImgInd]);
 
             MainViewControl.ImgPath = imgFiles![currImgInd];
@@ -311,10 +349,52 @@ namespace ImageViewer
                 FilePathDisplay.Text = imgFiles![currImgInd];
             });
 
+            
             LoadImgThread();
+
 
         }
 
+        private BitmapImage GetBitmapImageMemoryStream(MemoryStream stream, CancellationTokenSource token, Rotation defaultRot = Rotation.Rotate0)
+        {
+            Rotation rotation = defaultRot;
+
+            BitmapFrame? bitmapFrame = BitmapFrame.Create(stream, BitmapCreateOptions.DelayCreation, BitmapCacheOption.OnLoad);
+            BitmapMetadata? bitmapMetadata = bitmapFrame.Metadata as BitmapMetadata;
+
+            if ((bitmapMetadata != null) && (bitmapMetadata.ContainsQuery(ORIENTATION_QUERY)))
+            {
+                object o = bitmapMetadata!.GetQuery(ORIENTATION_QUERY);
+
+                if (o != null)
+                {
+                    switch ((ushort)o)
+                    {
+                        case 6:
+                            rotation = Rotation.Rotate90;
+                            break;
+                        case 3:
+                            rotation = Rotation.Rotate180;
+                            break;
+                        case 8:
+                            rotation = Rotation.Rotate270;
+                            break;
+                    }
+                }
+            }
+
+            var image = new BitmapImage();
+
+            image.BeginInit();
+            image.StreamSource = stream;
+            //image.CacheOption = BitmapCacheOption.OnLoad;
+            image.Rotation = rotation;
+            image.EndInit();
+
+            image.Freeze();
+
+            return image;
+        }
 
         private BitmapImage GetBitmapImage(string filePath, CancellationTokenSource token, bool useFileStream = true, Rotation defaultRot = Rotation.Rotate0)
         {
@@ -362,7 +442,8 @@ namespace ImageViewer
                 image.Freeze();
 
                 return image;
-            } else
+            } 
+            else
             {
                 var image = new BitmapImage();
 
