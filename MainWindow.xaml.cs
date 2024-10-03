@@ -32,7 +32,7 @@ namespace ImageViewer
         private const string ORIENTATION_QUERY = "System.Photo.Orientation";
 
         private int currImgInd;
-        private List<string>? imgFiles;
+        private List<string> imgFiles = new List<string>();
 
         private bool imageDoneLoading = false;
 
@@ -108,10 +108,10 @@ namespace ImageViewer
                 {
                     MessageBox.Show("An image file was not loaded or was not valid", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                    if (Application.Current == null) return;
-                    Application.Current.Shutdown();
+                    //if (Application.Current == null) return;
+                    //Application.Current.Shutdown();
 
-                    return;
+                    //return;
                 }
                 else
                 {
@@ -122,10 +122,10 @@ namespace ImageViewer
                     {
                         MessageBox.Show("No image files were found", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
 
-                        if (Application.Current == null) return;
-                        Application.Current.Shutdown();
+                        //if (Application.Current == null) return;
+                        //Application.Current.Shutdown();
 
-                        return;
+                        //return;
                     }
 
                     imgFiles = imgFiles!.Where(imgFile => IsValidImgFile(imgFile)).ToList();
@@ -303,6 +303,8 @@ namespace ImageViewer
 
         private async void SetMainImage()
         {
+            if (imgFiles == null || !imgFiles.Any()) return;
+
             DestroyCancelTokensAndThreads();
 
             //Load ftp image
@@ -317,26 +319,29 @@ namespace ImageViewer
                         if (dialog.ShowDialog() == true)
                         {
                             FTPUtil.Connect(dialog.HostText, int.Parse(dialog.PortText), dialog.UsernameText, dialog.PasswordText);
+                           
+                            string newPath = "/" + string.Join('/', imgFiles![currImgInd].Split('/').Skip(3));
+                            byte[] bytes = FTPUtil.GetBytes(newPath);
+
+                            //Download file to pictures path
+                            string fileName = Path.GetFileName(newPath);
+                            string picturesPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+                            string newFilePath = $"{picturesPath}\\{fileName}";
+                            using var fileStream = new FileStream(newFilePath, FileMode.OpenOrCreate);
+                            fileStream.Write(bytes, 0, bytes.Length);
+
+                            imgFiles.Remove(imgFiles![currImgInd]);
+                            imgFiles.Insert(currImgInd, newFilePath);
+
                         }
                         
                     });
-
-                    string newPath = "/" + string.Join('/', imgFiles![currImgInd].Split('/').Skip(3));
-                    byte[] bytes = FTPUtil.GetBytes(newPath);
-
-                    //Download file to pictures path
-                    string fileName = Path.GetFileName(newPath);
-                    string picturesPath = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
-                    string newFilePath = $"{picturesPath}\\{fileName}";
-                    using var fileStream = new FileStream(newFilePath, FileMode.OpenOrCreate);
-                    fileStream.Write(bytes, 0, bytes.Length);
-
-                    imgFiles.Remove(imgFiles![currImgInd]);
-                    imgFiles.Insert(currImgInd, newFilePath);
                 }
             }
 
             if (!File.Exists(imgFiles![currImgInd])) imgFiles.Remove(imgFiles![currImgInd]);
+
+            if (!imgFiles.Any()) return;
 
             MainViewControl.ImgPath = imgFiles![currImgInd];
             MainViewControl.ImgSrc = null;
@@ -599,6 +604,17 @@ namespace ImageViewer
         private void CopyFullPathMenuItem_Click(object sender, RoutedEventArgs e)
         {
             Clipboard.SetText(imgFiles![currImgInd]);
+        }
+
+        private void AssociateFileExts_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                DefaultFileExtensionManager.SetDefaultFileExtensions();
+            }catch (Exception error)
+            {
+                MessageBox.Show("Administrator privledges not acquired. Re-run as administrator.", "ERROR", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
     }
 }

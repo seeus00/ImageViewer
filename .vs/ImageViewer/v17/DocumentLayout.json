@@ -1,0 +1,85 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\casey\\Downloads\\ImageViewer\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{FFA10057-7B06-4166-80F3-2556FBA104E2}|ImageViewer.csproj|c:\\users\\casey\\downloads\\imageviewer\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFA10057-7B06-4166-80F3-2556FBA104E2}|ImageViewer.csproj|solutionrelative:mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFA10057-7B06-4166-80F3-2556FBA104E2}|ImageViewer.csproj|c:\\users\\casey\\downloads\\imageviewer\\util\\defaultfileextensionmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FFA10057-7B06-4166-80F3-2556FBA104E2}|ImageViewer.csproj|solutionrelative:util\\defaultfileextensionmanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFA10057-7B06-4166-80F3-2556FBA104E2}|ImageViewer.csproj|c:\\users\\casey\\downloads\\imageviewer\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{FFA10057-7B06-4166-80F3-2556FBA104E2}|ImageViewer.csproj|solutionrelative:mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FFA10057-7B06-4166-80F3-2556FBA104E2}|ImageViewer.csproj|c:\\users\\casey\\downloads\\imageviewer\\imageviewer.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|",
+      "RelativeMoniker": "D:0:0:{FFA10057-7B06-4166-80F3-2556FBA104E2}|ImageViewer.csproj|solutionrelative:imageviewer.csproj||{04B8AB82-A572-4FEF-95CE-5222444B6B64}|"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "ImageViewer",
+              "DocumentMoniker": "C:\\Users\\casey\\Downloads\\ImageViewer\\ImageViewer.csproj",
+              "RelativeDocumentMoniker": "ImageViewer.csproj",
+              "ToolTip": "C:\\Users\\casey\\Downloads\\ImageViewer\\ImageViewer.csproj",
+              "RelativeToolTip": "ImageViewer.csproj",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2024-10-03T18:52:14.339Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "DefaultFileExtensionManager.cs",
+              "DocumentMoniker": "C:\\Users\\casey\\Downloads\\ImageViewer\\Util\\DefaultFileExtensionManager.cs",
+              "RelativeDocumentMoniker": "Util\\DefaultFileExtensionManager.cs",
+              "ToolTip": "C:\\Users\\casey\\Downloads\\ImageViewer\\Util\\DefaultFileExtensionManager.cs",
+              "RelativeToolTip": "Util\\DefaultFileExtensionManager.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAcwEwAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-03T18:47:01.595Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "C:\\Users\\casey\\Downloads\\ImageViewer\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "MainWindow.xaml",
+              "ToolTip": "C:\\Users\\casey\\Downloads\\ImageViewer\\MainWindow.xaml",
+              "RelativeToolTip": "MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-10-03T18:44:15.023Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MainWindow.xaml.cs",
+              "DocumentMoniker": "C:\\Users\\casey\\Downloads\\ImageViewer\\MainWindow.xaml.cs",
+              "RelativeDocumentMoniker": "MainWindow.xaml.cs",
+              "ToolTip": "C:\\Users\\casey\\Downloads\\ImageViewer\\MainWindow.xaml.cs",
+              "RelativeToolTip": "MainWindow.xaml.cs",
+              "ViewState": "AgIAAFUCAAAAAAAAAAAhwGoCAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-10-03T18:44:09.044Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

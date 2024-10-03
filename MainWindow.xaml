@@ -75,6 +75,8 @@
                     <MenuItem Header="Open file location" Click="OpenFileLocationMenuItem_Click"/>
                     <MenuItem Header="Copy full path" Click="CopyFullPathMenuItem_Click"/>
                     <MenuItem Header="File properties" Click="FilePropertiesMenuItem_Click"/>
+                    <MenuItem Header="Associate file extensions" Click="AssociateFileExts_Click"/>
+                
                 </ContextMenu>
             </local:ViewerControl.ContextMenu>
         </local:ViewerControl>

@@ -2,7 +2,6 @@
   "profiles": {
     "ImageViewer": {
       "commandName": "Project",
-      "commandLineArgs": "\"ftp://pc@192.168.1.16:4327/device/Pictures/1640968865449.jpg\"",
       "nativeDebugging": false
     }
   }
