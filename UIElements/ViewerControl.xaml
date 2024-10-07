@@ -13,8 +13,14 @@
         MouseLeftButtonUp="CanvasMouseLeftButtonUp"
         MouseMove="CanvasMouseMove"
         ClipToBounds="True"
-        Background="{Binding Path=Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
+        Background="{Binding Path=Background, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}"
+        IsManipulationEnabled="True"
+        TouchDown="MainCanvas_TouchDown"
+        TouchUp="MainCanvas_TouchUp"
+        ManipulationDelta="MainCanvas_ManipulationDelta"
+        ManipulationStarting="MainCanvas_ManipulationStarting">
 
+        
 
             <!--<Image x:Name="ThumbnailImage" Visibility="Collapsed">
         <Image.RenderTransform>

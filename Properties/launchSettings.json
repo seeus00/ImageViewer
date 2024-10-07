@@ -2,6 +2,7 @@
   "profiles": {
     "ImageViewer": {
       "commandName": "Project",
+      "commandLineArgs": "\"C:/Users/casey/Pictures/1726345166678063s.jpg\"",
       "nativeDebugging": false
     }
   }

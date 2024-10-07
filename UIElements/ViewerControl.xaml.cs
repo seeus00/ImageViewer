@@ -71,7 +71,6 @@ namespace ImageViewer.UIElements
             previewMatrix = new double[] { 1, 0, 0, 1, 0, 0 };
 
             ImgSrc = new BitmapImage();
-
         }
 
         private Point ToScreen(Point from)
@@ -585,6 +584,70 @@ namespace ImageViewer.UIElements
 
             isSaving = false;
 
+        }
+
+        private volatile int nrOfTouchPoints;
+        private object mutex = new object();
+
+        private void MainCanvas_TouchDown(object sender, TouchEventArgs e)
+        {
+            lock (mutex)
+            {
+                nrOfTouchPoints++;
+            }
+        }
+
+        private void MainCanvas_TouchUp(object sender, TouchEventArgs e)
+        {
+            lock (mutex)
+            {
+                nrOfTouchPoints--;
+            }
+        }
+
+        private void MainCanvas_ManipulationDelta(object sender, ManipulationDeltaEventArgs e)
+        {
+            int nrOfPoints = 0;
+
+            lock (mutex)
+            {
+                nrOfPoints = nrOfTouchPoints;
+            }
+
+            if (nrOfPoints >= 2)
+            {
+                var matrix = MainImage.LayoutTransform.Value;
+
+                Point? centerOfPinch = (e.ManipulationContainer as FrameworkElement)?.TranslatePoint(e.ManipulationOrigin, MainCanvas);
+
+                if (centerOfPinch == null)
+                {
+                    return;
+                }
+
+                var deltaManipulation = e.DeltaManipulation;
+                Point? originOfManipulation = (e.ManipulationContainer as FrameworkElement)?.TranslatePoint(e.ManipulationOrigin, MainImage);
+
+                double delta = deltaManipulation.Scale.X;
+                Debug.WriteLine(delta);
+                delta = delta < 1 ? -delta : delta;
+
+                ScaleAt(centerOfPinch!.Value, Math.Exp((delta / 4f) * 0.15f));
+                Apply();
+
+                e.Handled = true;
+            }
+            else
+            {
+                //ScrollViewerParent.ScrollToHorizontalOffset(ScrollViewerParent.HorizontalOffset - e.DeltaManipulation.Translation.X);
+                //ScrollViewerParent.ScrollToVerticalOffset(ScrollViewerParent.VerticalOffset - e.DeltaManipulation.Translation.Y);
+            }
+        }
+
+        private void MainCanvas_ManipulationStarting(object sender, ManipulationStartingEventArgs e)
+        {
+            e.ManipulationContainer = MainCanvas;
+            e.Handled = true;
         }
     }
 }
